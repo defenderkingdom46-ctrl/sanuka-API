@@ -1,0 +1,13 @@
+    const sock = makeWASocket({
+        auth: {
+            creds: state.creds,
+            keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
+        },
+        printQRInTerminal: false,
+        logger: pino({ level: 'silent' }),
+        browser: ['Ubuntu', 'Chrome', '130.0.0.0'],     // Important for 405 fix
+        markOnlineOnConnect: false,
+        syncFullHistory: false,
+        connectTimeoutMs: 60000,
+        defaultQueryTimeoutMs: 60000,
+    });
