@@ -1,1 +1,152 @@
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+
+puppeteer.use(StealthPlugin());
+
+const uniq = (arr) => [...new Set(arr.filter(Boolean))];
+
+function classifyUrl(url) {
+  const u = url.toLowerCase();
+  if (u.includes("graphql")) return "graphql";
+  if (u.includes("/api/")) return "api";
+  if (u.match(/\.(png|jpg|jpeg|webp|gif|svg)$/)) return "image";
+  if (u.match(/\.(mp4|m3u8|webm)$/)) return "video";
+  if (u.match(/\.(css)$/)) return "css";
+  if (u.match(/\.(js)$/)) return "script";
+  if (u.match(/(auth|login|token|session|sign-in)/)) return "auth";
+  if (u.match(/(analytics|track|pixel)/)) return "tracking";
+  return "other";
+}
+
+async function superBlackBox(url, autoUnlock = true) {
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: [
+      "--no-sandbox", 
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage", // Crucial for hosting on VPS/Render
+      "--disable-gpu"
+    ]
+  });
+
+  const page = await browser.newPage();
+  const network = [];
+
+  // Track Network Traffic
+  page.on("request", (req) => {
+    const type = classifyUrl(req.url());
+    if (type !== "other") {
+      network.push({ type, url: req.url(), method: req.method() });
+    }
+  });
+
+  await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+
+  // ---------------------------------------------------------
+  // LAYER 1: DEEP JS INTEL & CREDENTIAL SCANNER
+  // ---------------------------------------------------------
+  const jsIntel = await page.evaluate(() => {
+    const scripts = [...document.scripts].map(s => s.textContent || "").join("\n");
+    
+    // RegEx Patterns
+    const urlRegex = /https?:\/\/[^\s"'<>]+/g;
+    const apiRegex = /\/api\/[a-zA-Z0-9\/_\-]+/g;
+    // New: Look for passwords, keys, and hardcoded credentials
+    const credsRegex = /(password|passwd|auth_key|access_token|secret|api_key|admin_pass)\s*[:=]\s*["']([^"']+)["']/gi;
+
+    const urls = scripts.match(urlRegex) || [];
+    const apis = scripts.match(apiRegex) || [];
+    
+    const potentialCredentials = [];
+    let match;
+    while ((match = credsRegex.exec(scripts)) !== null) {
+      potentialCredentials.push({ key: match[1], value: match[2] });
+    }
+
+    return {
+      urls: [...new Set(urls)],
+      apis: [...new Set(apis)],
+      leakedCredentials: potentialCredentials
+    };
+  });
+
+  // ---------------------------------------------------------
+  // LAYER 2: AUTO-GATE BYPASS (The "Cracker")
+  // ---------------------------------------------------------
+  if (autoUnlock && jsIntel.leakedCredentials.length > 0) {
+    try {
+      // Logic: If we found something that looks like a password, try to inject it
+      const pass = jsIntel.leakedCredentials.find(c => c.key.toLowerCase().includes("pass"));
+      
+      if (pass) {
+        // Find the first visible password input
+        const inputFound = await page.evaluate(() => {
+          const input = document.querySelector('input[type="password"]') || document.querySelector('input[name*="pass"]');
+          if (input) {
+            input.focus();
+            return true;
+          }
+          return false;
+        });
+
+        if (inputFound) {
+          await page.keyboard.type(pass.value);
+          await page.keyboard.press('Enter');
+          // Wait to see if the DOM changes after the "unlock"
+          await page.waitForNavigation({ waitUntil: 'networkidle2' }).catch(() => {});
+        }
+      }
+    } catch (e) {
+      console.log("Auto-unlock failed or no input found.");
+    }
+  }
+
+  // ---------------------------------------------------------
+  // LAYER 3: FINAL DOM CAPTURE
+  // ---------------------------------------------------------
+  const html = await page.content();
+  const dom = await page.evaluate(() => {
+    return {
+      images: [...document.images].map(i => i.src),
+      videos: [...document.querySelectorAll("video source, video")].map(v => v.src || v.currentSrc).filter(Boolean),
+      links: [...document.links].map(l => l.href),
+      css: [...document.querySelectorAll('link[rel="stylesheet"]')].map(l => l.href),
+      scripts: [...document.scripts].map(s => s.src).filter(Boolean),
+      bgImages: [...document.querySelectorAll("*")]
+        .map(el => getComputedStyle(el).backgroundImage)
+        .filter(b => b && b.includes("url"))
+    };
+  });
+
+  await browser.close();
+
+  // Categorize Network
+  const categorizedNetwork = { api: [], graphql: [], image: [], video: [], css: [], script: [], auth: [], tracking: [] };
+  network.forEach(req => { if (categorizedNetwork[req.type]) categorizedNetwork[req.type].push(req.url); });
+
+  return {
+    url,
+    timestamp: new Date().toISOString(),
+    security: {
+      exposedCredentials: jsIntel.leakedCredentials,
+      isPasswordProtected: html.toLowerCase().includes("password")
+    },
+    frontend: { html },
+    dom: {
+      images: uniq(dom.images),
+      videos: uniq(dom.videos),
+      links: uniq(dom.links),
+      css: uniq(dom.css),
+      scripts: uniq(dom.scripts),
+      bgImages: uniq(dom.bgImages)
+    },
+    network: categorizedNetwork,
+    jsLeaks: {
+      urls: uniq(jsIntel.urls),
+      apis: uniq(jsIntel.apis)
+    }
+  };
+}
+
+module.exports = { superBlackBox };
 
