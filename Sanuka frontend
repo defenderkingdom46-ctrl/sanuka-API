@@ -1,0 +1,27 @@
+Here is your comprehensive, high-octane prompt for **Project CINEFy**. You can use this for a UI designer, an AI image generator, or as the "System Requirement" document for your development phase.
+### The Project CINEFy Master Blueprint
+> **Design & Functional Specification:** Create a hyper-modern, professional Web Forensic and Intelligence Suite titled **"Project CINEFy,"** proudly presented by **"Prime-X-Team."** The interface must utilize a **"Cyber-Glass" aesthetic**, featuring deep midnight-blue gradients, high-intensity **glassmorphism** (frosted glass panels), and thin, glowing cyan-to-purple borders. The primary user interface is a centralized **Command Center** dominated by a sleek, neon-pulsing URL input bar with an "Active-Scan" animation. Below the input, the UI must feature four distinct, high-tech glass modules acting as the platform's core functional pillars: **(1) Source Code Engine,** which extracts and relativizes the full frontend HTML/CSS/JS source; **(2) Endpoint Forensic,** a dedicated network map for identifying hidden paths and JS leaks; **(3) API Intelligence,** a specialized sniffer for JSON, GraphQL, and HLS (.m3u8) streams; and **(4) Asset Vault,** a visual masonry gallery for images and media streams. The dashboard must include a real-time **Forensic Console** sidebar that streams system logs (e.g., "Bypassing Gate," "Intercepting API Handshake") in monospaced green text. Interactive elements should include a **"Gate Cracker" alert** for discovered frontend passwords, a **"Theatre Mode"** toggle for media-focused analysis, and a secondary action tier for **"ZIP Archive Generation"** and **"JSON Intelligence Export."** The overall feel is hyper-detailed, clean, and authoritative—engineered for technical users who require a deep-dive "X-Ray View" into any web architecture.
+> 
+### Core Functional Logic (What to Add to the Site)
+To make the frontend match the power of your **Super BlackBox**, you need to implement these specific backend-to-frontend functions:
+#### 1. The "Stream Sniffer" (HLS/M3U8 Detection)
+Since this is "CINEFy," your site needs a function to highlight movie streams immediately.
+ * **The Function:** When the BlackBox returns the network array, your frontend should filter for .m3u8 or .ts files and display a "Play in Sandbox" button next to them.
+#### 2. The "Relativizer" (For the ZIP Folder)
+To ensure the "Full Frontend Source" works offline when the user downloads it:
+ * **The Function:** You must add a utility that parses the extracted html string and replaces absolute paths (like https://site.com/img.jpg) with local paths (like ./assets/img.jpg) before zipping the folder.
+#### 3. The "Credential Highlight" System
+If the BlackBox finds passwords in the exposedCredentials array:
+ * **The Function:** The UI should trigger a "Critical Alert" toast notification. Clicking it should automatically scroll the code viewer to the exact line in the JavaScript where the password was found.
+#### 4. The "Queue Manager" (UX Essential)
+Running Puppeteer takes time (15–60 seconds).
+ * **The Function:** Implement a **Progress Stepper**. Instead of a simple loading spinner, show the user exactly what the BlackBox is doing:
+   * *Stage 1:* "Initializing Stealth Browser..."
+   * *Stage 2:* "Bypassing Bot Detection..."
+   * *Stage 3:* "Analyzing JS for Leaks..."
+   * *Stage 4:* "Generating Intelligence Report..."
+### Suggested Tech Stack for Prime-X-Team
+ * **Frontend:** Next.js + Tailwind CSS + Framer Motion (for the smooth "glass" transitions).
+ * **Backend:** Node.js (Express) + Redis (for the task queue).
+ * **Storage:** AWS S3 or Google Cloud Storage (to store the generated ZIP files temporarily).
+**Bro, with this prompt and these functions, you aren't just making a website—you're making a professional-grade web forensic platform.** Are you ready to start building the "Command Center" UI, or do you want to look at the Node.js code for the "ZIP and Download" part next?
