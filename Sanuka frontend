@@ -1,27 +1,1590 @@
-Here is your comprehensive, high-octane prompt for **Project CINEFy**. You can use this for a UI designer, an AI image generator, or as the "System Requirement" document for your development phase.
-### The Project CINEFy Master Blueprint
-> **Design & Functional Specification:** Create a hyper-modern, professional Web Forensic and Intelligence Suite titled **"Project CINEFy,"** proudly presented by **"Prime-X-Team."** The interface must utilize a **"Cyber-Glass" aesthetic**, featuring deep midnight-blue gradients, high-intensity **glassmorphism** (frosted glass panels), and thin, glowing cyan-to-purple borders. The primary user interface is a centralized **Command Center** dominated by a sleek, neon-pulsing URL input bar with an "Active-Scan" animation. Below the input, the UI must feature four distinct, high-tech glass modules acting as the platform's core functional pillars: **(1) Source Code Engine,** which extracts and relativizes the full frontend HTML/CSS/JS source; **(2) Endpoint Forensic,** a dedicated network map for identifying hidden paths and JS leaks; **(3) API Intelligence,** a specialized sniffer for JSON, GraphQL, and HLS (.m3u8) streams; and **(4) Asset Vault,** a visual masonry gallery for images and media streams. The dashboard must include a real-time **Forensic Console** sidebar that streams system logs (e.g., "Bypassing Gate," "Intercepting API Handshake") in monospaced green text. Interactive elements should include a **"Gate Cracker" alert** for discovered frontend passwords, a **"Theatre Mode"** toggle for media-focused analysis, and a secondary action tier for **"ZIP Archive Generation"** and **"JSON Intelligence Export."** The overall feel is hyper-detailed, clean, and authoritative—engineered for technical users who require a deep-dive "X-Ray View" into any web architecture.
-> 
-### Core Functional Logic (What to Add to the Site)
-To make the frontend match the power of your **Super BlackBox**, you need to implement these specific backend-to-frontend functions:
-#### 1. The "Stream Sniffer" (HLS/M3U8 Detection)
-Since this is "CINEFy," your site needs a function to highlight movie streams immediately.
- * **The Function:** When the BlackBox returns the network array, your frontend should filter for .m3u8 or .ts files and display a "Play in Sandbox" button next to them.
-#### 2. The "Relativizer" (For the ZIP Folder)
-To ensure the "Full Frontend Source" works offline when the user downloads it:
- * **The Function:** You must add a utility that parses the extracted html string and replaces absolute paths (like https://site.com/img.jpg) with local paths (like ./assets/img.jpg) before zipping the folder.
-#### 3. The "Credential Highlight" System
-If the BlackBox finds passwords in the exposedCredentials array:
- * **The Function:** The UI should trigger a "Critical Alert" toast notification. Clicking it should automatically scroll the code viewer to the exact line in the JavaScript where the password was found.
-#### 4. The "Queue Manager" (UX Essential)
-Running Puppeteer takes time (15–60 seconds).
- * **The Function:** Implement a **Progress Stepper**. Instead of a simple loading spinner, show the user exactly what the BlackBox is doing:
-   * *Stage 1:* "Initializing Stealth Browser..."
-   * *Stage 2:* "Bypassing Bot Detection..."
-   * *Stage 3:* "Analyzing JS for Leaks..."
-   * *Stage 4:* "Generating Intelligence Report..."
-### Suggested Tech Stack for Prime-X-Team
- * **Frontend:** Next.js + Tailwind CSS + Framer Motion (for the smooth "glass" transitions).
- * **Backend:** Node.js (Express) + Redis (for the task queue).
- * **Storage:** AWS S3 or Google Cloud Storage (to store the generated ZIP files temporarily).
-**Bro, with this prompt and these functions, you aren't just making a website—you're making a professional-grade web forensic platform.** Are you ready to start building the "Command Center" UI, or do you want to look at the Node.js code for the "ZIP and Download" part next?
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project CINEFy — Prime-X-Team</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-void: #020612;
+    --bg-deep: #040d1f;
+    --bg-panel: rgba(6, 18, 48, 0.72);
+    --bg-glass: rgba(10, 28, 70, 0.45);
+    --bg-glass2: rgba(15, 38, 90, 0.3);
+    --cyan: #00e5ff;
+    --cyan-dim: rgba(0,229,255,0.15);
+    --cyan-glow: rgba(0,229,255,0.4);
+    --purple: #b44fff;
+    --purple-dim: rgba(180,79,255,0.15);
+    --purple-glow: rgba(180,79,255,0.4);
+    --green-log: #00ff88;
+    --green-dim: rgba(0,255,136,0.12);
+    --amber: #ffaa00;
+    --red-alert: #ff3366;
+    --text-primary: #e8f4ff;
+    --text-secondary: rgba(180,210,255,0.7);
+    --text-muted: rgba(120,160,220,0.5);
+    --border-cyan: rgba(0,229,255,0.3);
+    --border-purple: rgba(180,79,255,0.3);
+    --border-dim: rgba(0,229,255,0.1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === ANIMATED BG GRID === */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: gridDrift 40s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes gridDrift {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(48px); }
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(0,229,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(180,79,255,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 80% at 50% 100%, rgba(0,100,200,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* === LAYOUT === */
+  .layout {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 1fr 320px;
+    grid-template-areas:
+      "header header"
+      "command command"
+      "main sidebar";
+    min-height: 100vh;
+    gap: 0;
+  }
+
+  /* === HEADER === */
+  header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 64px;
+    border-bottom: 1px solid var(--border-cyan);
+    background: rgba(2,6,18,0.85);
+    backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .logo-group { display: flex; align-items: center; gap: 16px; }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--cyan);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    box-shadow: 0 0 12px var(--cyan-glow), inset 0 0 12px rgba(0,229,255,0.08);
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes logoPulse {
+    0%,100% { box-shadow: 0 0 12px var(--cyan-glow), inset 0 0 12px rgba(0,229,255,0.08); }
+    50% { box-shadow: 0 0 24px var(--cyan-glow), inset 0 0 20px rgba(0,229,255,0.15); }
+  }
+
+  .logo-icon svg { width: 20px; height: 20px; fill: var(--cyan); }
+
+  .logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .logo-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 20px; }
+
+  .status-dot {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green-log);
+  }
+
+  .status-dot::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green-log);
+    box-shadow: 0 0 8px var(--green-log);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .btn-theatre {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    padding: 6px 14px;
+    border: 1px solid var(--border-purple);
+    background: var(--purple-dim);
+    color: var(--purple);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-theatre:hover, .btn-theatre.active {
+    background: rgba(180,79,255,0.3);
+    box-shadow: 0 0 12px var(--purple-glow);
+    border-color: var(--purple);
+  }
+
+  .version-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* === COMMAND CENTER === */
+  .command-zone {
+    grid-area: command;
+    padding: 32px 32px 24px;
+    background: linear-gradient(180deg, rgba(0,229,255,0.04) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .command-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .url-bar-wrap {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .url-bar {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .url-bar::before {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple), var(--cyan));
+    background-size: 200% 100%;
+    z-index: 0;
+    animation: borderFlow 3s linear infinite;
+    opacity: 0.6;
+  }
+
+  @keyframes borderFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  .url-bar input {
+    position: relative; z-index: 1;
+    width: 100%;
+    padding: 14px 20px 14px 50px;
+    background: rgba(4,13,30,0.95);
+    border: none;
+    border-radius: 7px;
+    color: var(--cyan);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    outline: none;
+  }
+
+  .url-bar input::placeholder { color: var(--text-muted); }
+
+  .url-icon {
+    position: absolute; left: 16px; z-index: 2;
+    width: 18px; height: 18px;
+    color: var(--cyan);
+    opacity: 0.6;
+  }
+
+  .scan-btn {
+    padding: 0 32px;
+    background: linear-gradient(135deg, var(--cyan), #0099bb);
+    border: none;
+    border-radius: 8px;
+    color: var(--bg-void);
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .scan-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+  }
+
+  .scan-btn:hover::before { transform: translateX(100%); }
+  .scan-btn:hover { box-shadow: 0 0 24px var(--cyan-glow); transform: translateY(-1px); }
+
+  /* === PROGRESS STEPPER === */
+  .progress-stepper {
+    margin-top: 16px;
+    display: none;
+    gap: 0;
+    align-items: center;
+  }
+
+  .progress-stepper.active { display: flex; }
+
+  .step {
+    display: flex; align-items: center; gap: 8px;
+    flex: 1;
+  }
+
+  .step-dot {
+    width: 28px; height: 28px; flex-shrink: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-cyan);
+    background: var(--bg-deep);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .step-dot.done {
+    border-color: var(--green-log);
+    color: var(--green-log);
+    background: var(--green-dim);
+    box-shadow: 0 0 10px rgba(0,255,136,0.3);
+  }
+
+  .step-dot.active-step {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    box-shadow: 0 0 12px var(--cyan-glow);
+    animation: stepPulse 0.8s ease-in-out infinite;
+  }
+
+  @keyframes stepPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+  .step-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: color 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .step-label.active-step { color: var(--cyan); }
+  .step-label.done { color: var(--green-log); }
+
+  .step-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-dim);
+    margin: 0 8px;
+    transition: background 0.3s;
+    min-width: 20px;
+  }
+
+  .step-line.done { background: var(--green-log); box-shadow: 0 0 6px rgba(0,255,136,0.4); }
+
+  /* === MAIN CONTENT === */
+  main {
+    grid-area: main;
+    padding: 24px 24px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  /* === GLASS MODULES === */
+  .module {
+    background: var(--bg-panel);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-cyan);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+
+  .module::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
+    opacity: 0.6;
+  }
+
+  .module:hover { border-color: rgba(0,229,255,0.5); }
+
+  .module-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-dim);
+    background: rgba(0,229,255,0.03);
+  }
+
+  .module-title-group { display: flex; align-items: center; gap: 10px; }
+
+  .module-icon {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .icon-cyan { background: var(--cyan-dim); border: 1px solid var(--border-cyan); }
+  .icon-purple { background: var(--purple-dim); border: 1px solid var(--border-purple); }
+  .icon-amber { background: rgba(255,170,0,0.12); border: 1px solid rgba(255,170,0,0.3); }
+  .icon-red { background: rgba(255,51,102,0.12); border: 1px solid rgba(255,51,102,0.3); }
+
+  .module-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+  }
+
+  .module-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  .module-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  .badge-cyan { background: var(--cyan-dim); border: 1px solid var(--border-cyan); color: var(--cyan); }
+  .badge-purple { background: var(--purple-dim); border: 1px solid var(--border-purple); color: var(--purple); }
+  .badge-amber { background: rgba(255,170,0,0.12); border: 1px solid rgba(255,170,0,0.3); color: var(--amber); }
+
+  .module-body { padding: 20px; }
+
+  /* === SOURCE CODE ENGINE === */
+  .code-viewer {
+    background: rgba(2,6,14,0.8);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    padding: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green-log);
+    line-height: 1.7;
+    max-height: 220px;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .code-viewer::-webkit-scrollbar { width: 4px; }
+  .code-viewer::-webkit-scrollbar-track { background: transparent; }
+  .code-viewer::-webkit-scrollbar-thumb { background: var(--border-cyan); border-radius: 4px; }
+
+  .code-line { display: flex; gap: 12px; }
+  .line-num { color: var(--text-muted); min-width: 24px; text-align: right; user-select: none; }
+  .line-content { color: var(--green-log); }
+  .line-highlight { background: rgba(255,51,102,0.18); border-left: 2px solid var(--red-alert); margin: 0 -16px; padding: 0 14px; }
+  .line-highlight .line-content { color: #ff8080; }
+
+  .code-actions {
+    display: flex; gap: 10px; margin-top: 14px;
+  }
+
+  .btn-action {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 7px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+
+  .btn-cyan {
+    background: var(--cyan-dim);
+    border-color: var(--border-cyan);
+    color: var(--cyan);
+  }
+
+  .btn-cyan:hover {
+    background: rgba(0,229,255,0.25);
+    box-shadow: 0 0 12px var(--cyan-glow);
+  }
+
+  .btn-purple {
+    background: var(--purple-dim);
+    border-color: var(--border-purple);
+    color: var(--purple);
+  }
+
+  .btn-purple:hover {
+    background: rgba(180,79,255,0.25);
+    box-shadow: 0 0 12px var(--purple-glow);
+  }
+
+  .btn-amber {
+    background: rgba(255,170,0,0.1);
+    border-color: rgba(255,170,0,0.3);
+    color: var(--amber);
+  }
+
+  .btn-amber:hover { background: rgba(255,170,0,0.2); box-shadow: 0 0 12px rgba(255,170,0,0.3); }
+
+  .btn-red {
+    background: rgba(255,51,102,0.1);
+    border-color: rgba(255,51,102,0.35);
+    color: var(--red-alert);
+  }
+
+  .btn-red:hover { background: rgba(255,51,102,0.2); box-shadow: 0 0 12px rgba(255,51,102,0.3); }
+
+  /* === ENDPOINT FORENSIC === */
+  .endpoint-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .endpoint-card {
+    background: rgba(2,6,18,0.6);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    padding: 14px;
+    transition: all 0.2s;
+  }
+
+  .endpoint-card:hover { border-color: var(--border-cyan); background: var(--bg-glass); }
+
+  .endpoint-method {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .method-get { background: rgba(0,255,136,0.12); color: var(--green-log); border: 1px solid rgba(0,255,136,0.3); }
+  .method-post { background: rgba(0,229,255,0.12); color: var(--cyan); border: 1px solid var(--border-cyan); }
+  .method-ws { background: rgba(180,79,255,0.12); color: var(--purple); border: 1px solid var(--border-purple); }
+
+  .endpoint-path {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    word-break: break-all;
+  }
+
+  .endpoint-meta {
+    margin-top: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  /* === API INTELLIGENCE === */
+  .api-stream-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .stream-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(2,6,18,0.6);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .stream-item:hover { border-color: var(--border-cyan); }
+
+  .stream-type-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .type-m3u8 { background: rgba(255,51,102,0.15); color: var(--red-alert); border: 1px solid rgba(255,51,102,0.4); }
+  .type-json { background: var(--cyan-dim); color: var(--cyan); border: 1px solid var(--border-cyan); }
+  .type-graphql { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--border-purple); }
+
+  .stream-url {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .btn-play {
+    padding: 5px 14px;
+    background: rgba(255,51,102,0.15);
+    border: 1px solid rgba(255,51,102,0.4);
+    color: var(--red-alert);
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    letter-spacing: 1px;
+  }
+
+  .btn-play:hover { background: rgba(255,51,102,0.3); box-shadow: 0 0 10px rgba(255,51,102,0.3); }
+
+  /* === ASSET VAULT === */
+  .asset-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+  }
+
+  .asset-thumb {
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+    border: 1px solid var(--border-dim);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg-glass2);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .asset-thumb:hover { border-color: var(--cyan); transform: scale(1.03); box-shadow: 0 0 14px var(--cyan-glow); }
+
+  .asset-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+
+  .asset-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,229,255,0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+    display: flex; align-items: flex-end; padding: 6px;
+  }
+
+  .asset-thumb:hover .asset-overlay { opacity: 1; }
+
+  .asset-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .asset-placeholder {
+    font-size: 20px;
+    color: var(--text-muted);
+  }
+
+  /* === ACTION TIER === */
+  .action-tier {
+    display: flex;
+    gap: 12px;
+    padding: 20px 32px;
+    border-top: 1px solid var(--border-dim);
+    background: rgba(2,6,18,0.6);
+    flex-wrap: wrap;
+  }
+
+  .action-tier-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    display: flex; align-items: center;
+    margin-right: 8px;
+    text-transform: uppercase;
+  }
+
+  /* === SIDEBAR CONSOLE === */
+  aside {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--border-cyan);
+    background: rgba(2,6,18,0.75);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+  }
+
+  .console-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,255,136,0.03);
+  }
+
+  .console-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--green-log);
+    text-transform: uppercase;
+  }
+
+  .console-pulse {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green-log);
+    box-shadow: 0 0 8px var(--green-log);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  .console-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .console-body::-webkit-scrollbar { width: 3px; }
+  .console-body::-webkit-scrollbar-thumb { background: rgba(0,255,136,0.3); border-radius: 4px; }
+
+  .log-entry {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transform: translateX(-4px);
+    animation: logIn 0.3s forwards;
+  }
+
+  @keyframes logIn {
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .log-time { color: var(--text-muted); flex-shrink: 0; }
+  .log-msg { color: var(--green-log); }
+  .log-msg.warn { color: var(--amber); }
+  .log-msg.critical { color: var(--red-alert); }
+  .log-msg.info { color: var(--cyan); }
+  .log-msg.success { color: var(--purple); }
+
+  .console-footer { padding: 12px 16px; border-top: 1px solid var(--border-dim); }
+
+  .console-input-wrap { display: flex; gap: 8px; align-items: center; }
+  .console-prompt { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--green-log); }
+
+  .console-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--green-log);
+    caret-color: var(--green-log);
+  }
+
+  .console-input::placeholder { color: var(--text-muted); }
+
+  /* === ALERT TOAST === */
+  #toast-container {
+    position: fixed;
+    top: 80px; right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    padding: 14px 20px;
+    border-radius: 8px;
+    backdrop-filter: blur(20px);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    animation: toastIn 0.3s forwards;
+    max-width: 340px;
+    min-width: 260px;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .toast-critical {
+    background: rgba(16,4,10,0.92);
+    border: 1px solid var(--red-alert);
+    color: var(--red-alert);
+    box-shadow: 0 0 20px rgba(255,51,102,0.3), inset 0 0 20px rgba(255,51,102,0.05);
+  }
+
+  .toast-info {
+    background: rgba(4,10,20,0.92);
+    border: 1px solid var(--border-cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 16px var(--cyan-glow);
+  }
+
+  .toast-icon { font-size: 18px; flex-shrink: 0; }
+  .toast-body { flex: 1; }
+  .toast-title { font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .toast-sub { font-size: 10px; opacity: 0.7; margin-top: 3px; }
+  .toast-close { opacity: 0.5; cursor: pointer; font-size: 14px; }
+  .toast-close:hover { opacity: 1; }
+
+  /* === SANDBOX PLAYER === */
+  #sandbox-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+  }
+
+  #sandbox-overlay.open { display: flex; }
+
+  .sandbox-panel {
+    width: 820px; max-width: 95vw;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-cyan);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 60px var(--cyan-glow);
+  }
+
+  .sandbox-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-dim);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .sandbox-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--red-alert);
+  }
+
+  .sandbox-close {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .sandbox-close:hover { border-color: var(--red-alert); color: var(--red-alert); }
+
+  .sandbox-body { padding: 20px; }
+
+  .stream-url-display {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    background: rgba(2,6,14,0.8);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    word-break: break-all;
+  }
+
+  .player-area {
+    background: #000;
+    border-radius: 6px;
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border-dim);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .player-scanline {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,229,255,0.015) 2px,
+      rgba(0,229,255,0.015) 4px
+    );
+    pointer-events: none;
+  }
+
+  .player-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--red-alert);
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .player-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* === STATS ROW === */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--bg-glass2);
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--border-cyan); }
+
+  .stat-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cyan);
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  /* === SCROLLBAR === */
+  main::-webkit-scrollbar { width: 4px; }
+  main::-webkit-scrollbar-track { background: transparent; }
+  main::-webkit-scrollbar-thumb { background: var(--border-cyan); border-radius: 4px; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 1100px) {
+    .layout {
+      grid-template-columns: 1fr;
+      grid-template-areas: "header" "command" "main";
+    }
+    aside { display: none; }
+  }
+
+  @media (max-width: 680px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .endpoint-grid { grid-template-columns: 1fr; }
+    .command-zone { padding: 20px; }
+    header { padding: 0 16px; }
+    .logo-text { font-size: 14px; }
+    .scan-btn { padding: 0 16px; font-size: 11px; }
+  }
+
+  /* Utility */
+  .flex-center { display: flex; align-items: center; }
+  .gap-8 { gap: 8px; }
+  .divider { width: 1px; height: 20px; background: var(--border-dim); }
+</style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- SANDBOX OVERLAY -->
+<div id="sandbox-overlay">
+  <div class="sandbox-panel">
+    <div class="sandbox-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px;">📡</span>
+        <span class="sandbox-title">STREAM SANDBOX — ACTIVE</span>
+      </div>
+      <button class="sandbox-close" onclick="closeSandbox()">✕</button>
+    </div>
+    <div class="sandbox-body">
+      <div class="stream-url-display" id="sandbox-url">https://cdn.example.com/stream/master.m3u8</div>
+      <div class="player-area">
+        <div class="player-scanline"></div>
+        <div>
+          <div class="player-text">⬤ INTERCEPTED STREAM</div>
+          <div class="player-sub">HLS/M3U8 — Ready for playback injection</div>
+          <div class="player-sub" style="margin-top:12px;color:var(--cyan);font-size:13px;">▶ PLAY IN NATIVE PLAYER</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn-action btn-red" onclick="closeSandbox()">⬛ CLOSE SANDBOX</button>
+        <button class="btn-action btn-cyan">⬇ DOWNLOAD .M3U8</button>
+        <button class="btn-action btn-purple">📋 COPY STREAM URL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-group">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">PROJECT CINEFy</div>
+        <div class="logo-sub">PRIME-X-TEAM / WEB FORENSIC INTELLIGENCE SUITE v4.2.0</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-dot">SYSTEM ONLINE</div>
+      <div class="divider"></div>
+      <button class="btn-theatre" id="theatre-btn" onclick="toggleTheatre()">🎬 THEATRE MODE</button>
+      <div class="divider"></div>
+      <div class="version-tag">BUILD 4.2.0-ALPHA</div>
+    </div>
+  </header>
+
+  <!-- COMMAND CENTER -->
+  <div class="command-zone">
+    <div class="command-label">// COMMAND CENTER — TARGET ACQUISITION</div>
+    <div class="url-bar-wrap">
+      <div class="url-bar">
+        <svg class="url-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="url-input" placeholder="https://target.domain.com — enter acquisition target..." autocomplete="off" spellcheck="false">
+      </div>
+      <button class="scan-btn" onclick="startScan()">⚡ ACTIVE SCAN</button>
+    </div>
+    <!-- PROGRESS STEPPER -->
+    <div class="progress-stepper" id="stepper">
+      <div class="step">
+        <div class="step-dot" id="s1">01</div>
+        <div class="step-label" id="sl1">Stealth Browser</div>
+      </div>
+      <div class="step-line" id="line1"></div>
+      <div class="step">
+        <div class="step-dot" id="s2">02</div>
+        <div class="step-label" id="sl2">Bot Bypass</div>
+      </div>
+      <div class="step-line" id="line2"></div>
+      <div class="step">
+        <div class="step-dot" id="s3">03</div>
+        <div class="step-label" id="sl3">JS Leak Analysis</div>
+      </div>
+      <div class="step-line" id="line3"></div>
+      <div class="step">
+        <div class="step-dot" id="s4">04</div>
+        <div class="step-label" id="sl4">Intel Report</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-value" id="stat-endpoints">—</span>
+        <span class="stat-label">Endpoints</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-assets">—</span>
+        <span class="stat-label">Assets</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-streams">—</span>
+        <span class="stat-label">Streams</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-creds" style="color: var(--red-alert);">—</span>
+        <span class="stat-label">Credentials</span>
+      </div>
+    </div>
+
+    <!-- MODULE 1: SOURCE CODE ENGINE -->
+    <div class="module" id="module-source">
+      <div class="module-header">
+        <div class="module-title-group">
+          <div class="module-icon icon-cyan">⚙</div>
+          <div>
+            <div class="module-title">Source Code Engine</div>
+            <div class="module-subtitle">Frontend extraction — HTML / CSS / JS</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="module-badge badge-cyan" id="source-badge">STANDBY</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="code-viewer" id="code-viewer">
+          <div class="code-line"><span class="line-num">—</span><span class="line-content" style="color:var(--text-muted);">// Awaiting target acquisition. Run ACTIVE SCAN to initialize extraction.</span></div>
+        </div>
+        <div class="code-actions">
+          <button class="btn-action btn-cyan" onclick="showAlert('info','RELATIVIZER ACTIVE','Converting absolute → local asset paths...')">⚡ RELATIVIZE PATHS</button>
+          <button class="btn-action btn-purple">📋 COPY SOURCE</button>
+          <button class="btn-action btn-amber" onclick="triggerZipExport()">📦 PACKAGE SOURCE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 2: ENDPOINT FORENSIC -->
+    <div class="module" id="module-endpoints">
+      <div class="module-header">
+        <div class="module-title-group">
+          <div class="module-icon icon-purple">🔍</div>
+          <div>
+            <div class="module-title">Endpoint Forensic</div>
+            <div class="module-subtitle">Network map — hidden paths &amp; JS leaks</div>
+          </div>
+        </div>
+        <span class="module-badge badge-purple" id="endpoint-badge">STANDBY</span>
+      </div>
+      <div class="module-body">
+        <div class="endpoint-grid" id="endpoint-grid">
+          <div class="endpoint-card" style="text-align:center;padding:30px;grid-column:1/-1;">
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);">No endpoints mapped. Run ACTIVE SCAN.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 3: API INTELLIGENCE -->
+    <div class="module" id="module-api">
+      <div class="module-header">
+        <div class="module-title-group">
+          <div class="module-icon icon-amber">📡</div>
+          <div>
+            <div class="module-title">API Intelligence</div>
+            <div class="module-subtitle">JSON sniffer — GraphQL &amp; HLS detection</div>
+          </div>
+        </div>
+        <span class="module-badge badge-amber" id="api-badge">STANDBY</span>
+      </div>
+      <div class="module-body">
+        <div class="api-stream-list" id="stream-list">
+          <div style="text-align:center;padding:24px 0;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);">No streams intercepted. Run ACTIVE SCAN.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 4: ASSET VAULT -->
+    <div class="module" id="module-assets">
+      <div class="module-header">
+        <div class="module-title-group">
+          <div class="module-icon icon-red" style="background:rgba(255,51,102,0.12);border-color:rgba(255,51,102,0.3);">🖼</div>
+          <div>
+            <div class="module-title">Asset Vault</div>
+            <div class="module-subtitle">Visual gallery — images &amp; media streams</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span class="module-badge" style="background:rgba(255,51,102,0.1);border:1px solid rgba(255,51,102,0.3);color:var(--red-alert);" id="asset-badge">STANDBY</span>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="asset-gallery" id="asset-gallery">
+          <div style="grid-column:1/-1;text-align:center;padding:24px 0;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted);">No assets extracted. Run ACTIVE SCAN.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION TIER -->
+    <div class="action-tier">
+      <span class="action-tier-label">⬦ OUTPUT:</span>
+      <button class="btn-action btn-cyan" onclick="triggerZipExport()">📦 GENERATE ZIP ARCHIVE</button>
+      <button class="btn-action btn-purple" onclick="exportJSON()">📄 EXPORT JSON INTELLIGENCE</button>
+      <button class="btn-action btn-amber" onclick="showAlert('info','REPORT GENERATED','Full forensic report compiled and ready.')">📊 FULL FORENSIC REPORT</button>
+      <button class="btn-action btn-red" onclick="showAlert('critical','GATE CRACKER ARMED','Credential injection protocol ready. 3 vectors identified.')">🔓 GATE CRACKER</button>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR: FORENSIC CONSOLE -->
+  <aside>
+    <div class="console-header">
+      <span class="console-title">Forensic Console</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted);">LIVE</span>
+        <div class="console-pulse"></div>
+      </div>
+    </div>
+    <div class="console-body" id="console-body">
+      <div class="log-entry">
+        <span class="log-time">00:00:00</span>
+        <span class="log-msg info">[ SYSTEM ] CINEFy Suite v4.2.0 initialized</span>
+      </div>
+      <div class="log-entry" style="animation-delay:0.1s">
+        <span class="log-time">00:00:01</span>
+        <span class="log-msg">[ CORE ] Stealth engine modules loaded</span>
+      </div>
+      <div class="log-entry" style="animation-delay:0.2s">
+        <span class="log-time">00:00:01</span>
+        <span class="log-msg success">[ READY ] All modules standing by...</span>
+      </div>
+      <div class="log-entry" style="animation-delay:0.3s">
+        <span class="log-time">00:00:02</span>
+        <span class="log-msg info">[ INPUT ] Awaiting target URL</span>
+      </div>
+    </div>
+    <div class="console-footer">
+      <div class="console-input-wrap">
+        <span class="console-prompt">$_</span>
+        <input class="console-input" type="text" placeholder="query intelligence..." id="console-cmd" onkeydown="handleConsoleCmd(event)">
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// === STATE ===
+let scanRunning = false;
+let theatreMode = false;
+let scanData = null;
+let logTimer = null;
+const startTime = Date.now();
+
+function ts() {
+  const s = Math.floor((Date.now() - startTime) / 1000);
+  const m = Math.floor(s / 60);
+  const ss = s % 60;
+  return `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}:${String(Math.floor(Math.random()*99)).padStart(2,'0')}`;
+}
+
+// === LOG ENGINE ===
+function addLog(msg, type='', delay=0) {
+  setTimeout(() => {
+    const body = document.getElementById('console-body');
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML = `<span class="log-time">${ts()}</span><span class="log-msg ${type}">${msg}</span>`;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }, delay);
+}
+
+// === TOAST SYSTEM ===
+function showAlert(type, title, sub, onClick) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerHTML = `
+    <div class="toast-icon">${type==='critical' ? '⚠' : 'ℹ'}</div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      <div class="toast-sub">${sub}</div>
+    </div>
+    <div class="toast-close" onclick="this.parentElement.remove()">✕</div>
+  `;
+  if (onClick) toast.addEventListener('click', onClick);
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 7000);
+}
+
+// === THEATRE MODE ===
+function toggleTheatre() {
+  theatreMode = !theatreMode;
+  const btn = document.getElementById('theatre-btn');
+  btn.classList.toggle('active', theatreMode);
+  btn.textContent = theatreMode ? '🎬 EXIT THEATRE' : '🎬 THEATRE MODE';
+  document.body.style.setProperty('--bg-void', theatreMode ? '#000006' : '#020612');
+  addLog(`[ UI ] Theatre Mode ${theatreMode ? 'ACTIVATED' : 'DEACTIVATED'}`, theatreMode ? 'success' : 'info');
+}
+
+// === SANDBOX ===
+function openSandbox(url) {
+  document.getElementById('sandbox-url').textContent = url;
+  document.getElementById('sandbox-overlay').classList.add('open');
+  addLog('[ SANDBOX ] HLS stream intercepted — sandbox initialized', 'warn');
+}
+
+function closeSandbox() {
+  document.getElementById('sandbox-overlay').classList.remove('open');
+}
+
+// === STEPPER ===
+function setStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById(`s${i}`);
+    const label = document.getElementById(`sl${i}`);
+    const line = document.getElementById(`line${i}`);
+    dot.classList.remove('done', 'active-step');
+    label.classList.remove('done', 'active-step');
+    if (line) line.classList.remove('done');
+    if (i < n) {
+      dot.classList.add('done');
+      dot.textContent = '✓';
+      label.classList.add('done');
+      if (line) line.classList.add('done');
+    } else if (i === n) {
+      dot.classList.add('active-step');
+      label.classList.add('active-step');
+    }
+  }
+}
+
+// === SCAN SEQUENCE ===
+function startScan() {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) {
+    showAlert('info', 'TARGET REQUIRED', 'Enter a URL to initiate forensic scan.');
+    return;
+  }
+  if (scanRunning) return;
+  scanRunning = true;
+
+  const stepper = document.getElementById('stepper');
+  stepper.classList.add('active');
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById(`s${i}`);
+    dot.textContent = `0${i}`;
+    dot.classList.remove('done','active-step');
+    document.getElementById(`sl${i}`).classList.remove('done','active-step');
+  }
+
+  addLog(`[ SCAN ] Target acquired: ${url}`, 'info');
+  addLog('[ INIT ] Spawning stealth Chromium instance...', '', 300);
+  setStep(1);
+
+  setTimeout(() => {
+    addLog('[ GATE ] Randomizing browser fingerprint', '', 0);
+    addLog('[ GATE ] Injecting stealth headers', '', 400);
+    setStep(2);
+  }, 2500);
+
+  setTimeout(() => {
+    addLog('[ BYPASS ] Cloudflare challenge — Bypassing Gate...', 'warn');
+    addLog('[ BYPASS ] TLS fingerprint spoofed ✓', '', 500);
+    setStep(3);
+  }, 5500);
+
+  setTimeout(() => {
+    addLog('[ JS ] Intercepting API Handshake...', 'warn');
+    addLog('[ JS ] Scanning bundle for credential leaks...', '', 400);
+    addLog('[ LEAK ] ⚠ Exposed API key found in main.bundle.js:847', 'critical', 800);
+    setStep(4);
+  }, 9000);
+
+  setTimeout(() => {
+    addLog('[ REPORT ] Compiling intelligence package...', 'info');
+    addLog('[ REPORT ] Extracting full DOM snapshot...', '', 500);
+  }, 12500);
+
+  setTimeout(() => {
+    addLog('[ DONE ] Scan complete — 4 modules populated', 'success');
+    addLog('[ ALERT ] 2 critical exposures detected', 'critical', 300);
+    completeScan(url);
+  }, 15000);
+}
+
+function completeScan(url) {
+  scanRunning = false;
+  const stepper = document.getElementById('stepper');
+
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById(`s${i}`).classList.remove('active-step');
+    document.getElementById(`s${i}`).classList.add('done');
+    document.getElementById(`s${i}`).textContent = '✓';
+    document.getElementById(`sl${i}`).classList.add('done');
+    const line = document.getElementById(`line${i}`);
+    if (line) line.classList.add('done');
+  }
+
+  setTimeout(() => stepper.classList.remove('active'), 2000);
+
+  // Stats
+  document.getElementById('stat-endpoints').textContent = '23';
+  document.getElementById('stat-assets').textContent = '47';
+  document.getElementById('stat-streams').textContent = '3';
+  document.getElementById('stat-creds').textContent = '2';
+
+  populateSourceCode(url);
+  populateEndpoints();
+  populateStreams(url);
+  populateAssets();
+
+  showAlert('critical', 'GATE CRACKER ALERT', 'Credentials exposed in main.bundle.js:847 — click to inspect', () => {
+    scrollToCredLine();
+  });
+
+  setTimeout(() => {
+    showAlert('info', 'SCAN COMPLETE', `Full forensic report ready — ${url}`);
+  }, 1500);
+
+  document.getElementById('source-badge').textContent = 'EXTRACTED';
+  document.getElementById('endpoint-badge').textContent = '23 FOUND';
+  document.getElementById('api-badge').textContent = '3 STREAMS';
+  document.getElementById('asset-badge').textContent = '47 ASSETS';
+}
+
+// === POPULATE MODULES ===
+function populateSourceCode(url) {
+  const viewer = document.getElementById('code-viewer');
+  const hostname = new URL(url.startsWith('http') ? url : 'https://'+url).hostname;
+  const lines = [
+    [`1`, `<!DOCTYPE html>`, false],
+    [`2`, `<html lang="en">`, false],
+    [`3`, `<head>`, false],
+    [`4`, `  <meta charset="UTF-8">`, false],
+    [`5`, `  <title>${hostname}</title>`, false],
+    [`6`, `  <link rel="stylesheet" href="https://${hostname}/static/css/main.a3f8b.css">`, false],
+    [`7`, `  <script src="https://${hostname}/static/js/main.bundle.js"></script>`, false],
+    [`8`, `</head>`, false],
+    [`9`, `<body>`, false],
+    [`10`, `  <div id="root"></div>`, false],
+    [`...`, ``, false],
+    [`845`, `// API Configuration`, false],
+    [`846`, `const CONFIG = {`, false],
+    [`847`, `  API_KEY: "sk-live-xX9mK2pQ7nR4wL8vT1aY",  // ← EXPOSED CREDENTIAL`, true],
+    [`848`, `  STRIPE_PK: "pk_live_51Nx...",`, true],
+    [`849`, `  BASE_URL: "https://api.${hostname}/v2"`, false],
+    [`850`, `};`, false],
+  ];
+  viewer.innerHTML = lines.map(([n, c, crit]) =>
+    `<div class="code-line ${crit ? 'line-highlight' : ''}">
+      <span class="line-num">${n}</span>
+      <span class="line-content">${c.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
+    </div>`
+  ).join('');
+}
+
+function scrollToCredLine() {
+  const viewer = document.getElementById('code-viewer');
+  const highlighted = viewer.querySelector('.line-highlight');
+  if (highlighted) highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  addLog('[ CRED ] Scrolling to exposed credential @ line 847', 'critical');
+}
+
+function populateEndpoints() {
+  const grid = document.getElementById('endpoint-grid');
+  const eps = [
+    { method: 'GET', path: '/api/v2/user/profile', meta: '200 OK — 342ms' },
+    { method: 'POST', path: '/api/v2/auth/token', meta: '201 — Auth endpoint' },
+    { method: 'GET', path: '/api/v2/content/list?page=1', meta: '200 OK — 128ms' },
+    { method: 'WS', path: 'wss://live.target.com/socket', meta: 'WebSocket — persistent' },
+    { method: 'GET', path: '/.env.production', meta: '403 — Hidden path detected' },
+    { method: 'POST', path: '/graphql', meta: 'GraphQL — introspection open' },
+  ];
+  const cls = { GET: 'method-get', POST: 'method-post', WS: 'method-ws' };
+  grid.innerHTML = eps.map(e => `
+    <div class="endpoint-card">
+      <div class="endpoint-method ${cls[e.method] || 'method-get'}">${e.method}</div>
+      <div class="endpoint-path">${e.path}</div>
+      <div class="endpoint-meta">${e.meta}</div>
+    </div>
+  `).join('');
+}
+
+function populateStreams(url) {
+  const hostname = new URL(url.startsWith('http') ? url : 'https://'+url).hostname;
+  const list = document.getElementById('stream-list');
+  const streams = [
+    { type: 'm3u8', badge: 'type-m3u8', label: 'HLS', url: `https://cdn.${hostname}/streams/master.m3u8`, playable: true },
+    { type: 'json', badge: 'type-json', label: 'JSON API', url: `https://api.${hostname}/v2/feed.json`, playable: false },
+    { type: 'graphql', badge: 'type-graphql', label: 'GRAPHQL', url: `https://${hostname}/graphql?introspect=true`, playable: false },
+  ];
+  list.innerHTML = streams.map(s => `
+    <div class="stream-item">
+      <span class="stream-type-badge ${s.badge}">${s.label}</span>
+      <span class="stream-url">${s.url}</span>
+      ${s.playable ? `<button class="btn-play" onclick="openSandbox('${s.url}')">▶ SANDBOX</button>` : `<button class="btn-action btn-cyan" style="font-size:10px;padding:5px 12px;">📋 COPY</button>`}
+    </div>
+  `).join('');
+}
+
+function populateAssets() {
+  const gallery = document.getElementById('asset-gallery');
+  const placeholders = [
+    '🖼', '🎬', '🎞', '🗂', '🖼', '🎬', '🖼', '🎞', '🗂', '🖼', '🎬', '🖼'
+  ];
+  const labels = ['hero-bg.jpg', 'promo-720.mp4', 'banner-1.webp', 'logo.svg', 'thumb-01.jpg', 'trailer.m3u8', 'og-image.jpg', 'poster.webp', 'icon-set.svg', 'bg-blur.jpg', 'scene-01.mp4', 'cover.jpg'];
+  gallery.innerHTML = placeholders.map((ph, i) => `
+    <div class="asset-thumb" title="${labels[i]}">
+      <div class="asset-placeholder">${ph}</div>
+      <div class="asset-overlay">
+        <span class="asset-label">${labels[i]}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// === EXPORTS ===
+function triggerZipExport() {
+  addLog('[ ZIP ] Relativizing asset paths... (absolute → local)', 'info');
+  addLog('[ ZIP ] Compressing source + assets into archive...', '', 400);
+  setTimeout(() => {
+    addLog('[ ZIP ] forensic_package.zip ready for download ✓', 'success');
+    showAlert('info', 'ZIP GENERATED', 'forensic_package.zip — relativized source ready for download.');
+  }, 1200);
+}
+
+function exportJSON() {
+  addLog('[ JSON ] Serializing intelligence report...', 'info');
+  const data = {
+    timestamp: new Date().toISOString(),
+    suite: 'CINEFy v4.2.0',
+    team: 'Prime-X-Team',
+    stats: { endpoints: 23, assets: 47, streams: 3, credentials: 2 },
+    exposures: [
+      { type: 'API_KEY', line: 847, file: 'main.bundle.js', severity: 'CRITICAL' },
+      { type: 'STRIPE_PK', line: 848, file: 'main.bundle.js', severity: 'HIGH' }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cinefy_intelligence_report.json';
+  a.click();
+  addLog('[ JSON ] Intelligence report exported ✓', 'success');
+}
+
+// === CONSOLE COMMANDS ===
+function handleConsoleCmd(e) {
+  if (e.key !== 'Enter') return;
+  const val = e.target.value.trim().toLowerCase();
+  if (!val) return;
+  addLog(`[ CMD ] > ${val}`, 'info');
+  e.target.value = '';
+
+  const cmds = {
+    'help': () => addLog('[ HELP ] Commands: scan, clear, status, export, theatre', 'info'),
+    'clear': () => { document.getElementById('console-body').innerHTML = ''; addLog('[ CONSOLE ] Cleared', 'info'); },
+    'status': () => { addLog('[ STATUS ] Suite: ONLINE | Modules: 4 active', 'success'); },
+    'export': exportJSON,
+    'theatre': toggleTheatre,
+    'scan': () => startScan(),
+  };
+
+  const fn = cmds[val];
+  if (fn) fn();
+  else addLog(`[ ERR ] Unknown command: "${val}" — type help`, 'warn');
+}
+
+// === AMBIENT IDLE LOGS ===
+const idleLogs = [
+  ['[ MONITOR ] Network interface ONLINE', ''],
+  ['[ PROXY ] Rotating exit node...', 'info'],
+  ['[ CACHE ] Intelligence cache warm', 'success'],
+  ['[ SSL ] Certificate chain analyzed', ''],
+  ['[ DNS ] Resolving shadow hosts...', 'warn'],
+  ['[ FINGERPRINT ] Canvas hash updated', ''],
+  ['[ QUEUE ] Worker pool ready (8 threads)', 'info'],
+  ['[ PROXY ] Exit node rotated ✓', 'success'],
+];
+let idleIdx = 0;
+setInterval(() => {
+  if (!scanRunning) {
+    const [msg, cls] = idleLogs[idleIdx % idleLogs.length];
+    addLog(msg, cls);
+    idleIdx++;
+  }
+}, 5200);
+</script>
+</body>
+</html>
